@@ -1,6 +1,7 @@
 import os
 import argparse
 import numpy as np
+import yaml
 
 def generate_dataset(num_shards, num_samples, num_features, output_dir):
     os.makedirs(output_dir, exist_ok=True)
@@ -12,7 +13,7 @@ def generate_dataset(num_shards, num_samples, num_features, output_dir):
         np.save(filename, data)
     
     print(f"Total dataset size: {num_shards * num_samples} samples, {num_features} features each.")
-    print("Dataset generation completed.")
+    print("Dataset generation completed. Data saved in directory:", output_dir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a synthetic dataset.")
@@ -24,3 +25,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     generate_dataset(args.num_shards, args.num_samples, args.num_features, args.output_dir)
+
+    meta = {
+        "num_shards": args.num_shards,
+        "num_samples": args.num_samples,
+        "num_features": args.num_features,
+        "dtype": "float32"
+    }
+    with open("metadata.yaml", "w") as f:
+        yaml.safe_dump(meta, f, sort_keys=False)
+
+    print("Saved metadata.yaml in current directory")
