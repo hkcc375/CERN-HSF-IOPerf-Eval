@@ -30,7 +30,7 @@ if __name__ == "__main__":
         "num_shards": args.num_shards,
         "num_samples": args.num_samples,
         "num_features": args.num_features,
-        "dtype": "float32"
+        "output_dir": args.output_dir
     }
     with open("metadata.yaml", "w") as f:
         yaml.safe_dump(meta, f, sort_keys=False)
