@@ -25,7 +25,9 @@ class SyntheticDataset(Dataset):
     def __getitem__(self, idx):
         shard_idx = idx // self.num_samples
         sample_idx = idx % self.num_samples
+
         filename = os.path.join(self.output_dir, f"shard_{shard_idx:02d}.npy")
+        
         data = np.load(filename)
         sample = data[sample_idx]
         return torch.from_numpy(sample)
