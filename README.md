@@ -122,7 +122,7 @@ The script will:
 3. Benchmark different numbers of workers  
 4. Report runtime, throughput, and I/O scaling efficiency  
 
-Example output:
+Output:
 
 ```
 Workers: 1, Time: 21.93 seconds, Throughput: 3192.02 samples/second, I/O Scaling Efficiency: 100.00%
