@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 from synthetic_dataset import SyntheticDataset
 
-def benchmark(n, runs):
+def benchmark(n, runs=5):
     """
     Benchmarks the time taken to iterate through the entire dataset for different number of workers
     """
@@ -33,15 +33,17 @@ if __name__ == "__main__":
 
     worker_list = [1, 2, 4, 8]
     results = {}
+    throughputs = {}
 
     for n in worker_list:
         print(f"Benchmarking with {n} workers (warmup + measurement)...")
-        total_iteration_time, throughput = benchmark(n, 1)
-        results[n] = total_iteration_time
-                                                     
+        avg_time, throughput = benchmark(n, 5)
+        results[n] = avg_time
+        throughputs[n] = throughput
+
     # Compute scaling efficiency
     t1 = results[1]
     for n in worker_list:
         efficiency = (t1 / (n * results[n])) * 100
-        print(f"Workers: {n}, Time: {results[n]:.2f} seconds, Efficiency: {efficiency:.2f}%")
+        print(f"Workers: {n}, Time: {results[n]:.2f} seconds, Throughput: {throughputs[n]:.2f} samples/second, I/O Scaling Efficiency: {efficiency:.2f}%")
 
