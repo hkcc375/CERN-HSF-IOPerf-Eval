@@ -19,6 +19,12 @@ class SyntheticDataset(Dataset):
         self.output_dir = self.meta["output_dir"]
         self.total_samples = self.num_shards * self.num_samples
 
+        self.shard_paths = [
+            os.path.join(self.output_dir, f"shard_{i:02d}.npy") for i in range(self.num_shards)
+        ]
+
+        self.shard_cache = {}
+
     def __len__(self):
         return self.total_samples
 
@@ -26,8 +32,13 @@ class SyntheticDataset(Dataset):
         shard_idx = idx // self.num_samples
         sample_idx = idx % self.num_samples
 
-        filename = os.path.join(self.output_dir, f"shard_{shard_idx:02d}.npy")
+        # Check cache
+        if shard_idx not in self.shard_cache:
+            path = self.shard_paths[shard_idx]
+            memap = np.load(path, mmap_mode='r')
+            self.shard_cache[shard_idx] = memap
+        else:
+            memap = self.shard_cache[shard_idx]
         
-        data = np.load(filename)
-        sample = data[sample_idx]
+        sample = memap[sample_idx]
         return torch.from_numpy(sample)
